@@ -4,6 +4,7 @@ class matrix:
     self.w = w
     self.h = h
     self.len = w * h
+    self.number = 2
 
   def fill_with_test_data(self):
     index = 0
@@ -12,8 +13,25 @@ class matrix:
        self.matrix[y][x] = index
        index = index + 1
 
-  #def build_data(self)
     
+  def get_number(self):
+    return  self.number
+
+  def inc_number(self):
+    self.number = self.number % 3 + 1
+
+  def data_is_exist(self, xAct, yAct, data):
+    for y in range(self.h): #Sorok ellenörzése
+      if(self.matrix[y][xAct] == data):
+        return True
+
+    for x in range(self.w): #Oszlopok ellenörzése
+      if(self.matrix[yAct][x] == data):
+        return True
+    
+    return False
+
+
 
   def fill_with_test_data_circle(self):
     index = 0
@@ -24,15 +42,9 @@ class matrix:
     yActual = self.h
 
     while(True):
-
-      if(index <= 35):
-        print(f"index:{index} yActual:{yActual}({self.h}) - xActual:{xActual}({self.w}) - x:{x} - y:{y} xF:{xF} - yF:{yF} sor:{xActual - y} osz:{yActual - y}")
-  
-        self.matrix[y][x] = index
-        index = index + 1
-      else:
-        print(f"Hiba:x:{x}y:{y}")
-        break
+      if(self.data_is_exist(x,y,self.get_number()) == False): 
+        self.matrix[y][x] = self.get_number()
+        self.inc_number()
 
       if(xF == 1): #Jobbra halad
         if(x == xActual - 1): #Lefele Fordul
@@ -82,4 +94,3 @@ class matrix:
 Matrix = matrix(6,6)
 Matrix.fill_with_test_data_circle()
 Matrix.display()
-#
