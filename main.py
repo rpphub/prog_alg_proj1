@@ -138,36 +138,52 @@ class matrix:
                 ax.text(j + 0.5, size - i - 0.5, str(val),
                         ha='center', va='center', fontsize=16)
 
-    # új megközelítés: a spirálvonal mentén a cellák éleihez igazítva
-    hDir = 1
+    # Spirál
+    hDir = 0
     vDir = 0
-    for i in range(len(path) - 1):
+    hDir_Next = 1
+    vDir_Next = 0
+    print(len(path))
+    for i in range(len(path)):
+      if(i < len(path) - 1):
         r1, c1 = path[i]
         r2, c2 = path[i + 1]
 
-        print(f"r1:{r1} c1:{c1} - hDir:{hDir} vDir:{vDir}")
+        hDir = hDir_Next
+        vDir = vDir_Next
+        hDir_Next = c2 - c1
+        vDir_Next = r2 - r1
+      else:
+        r1, c1 = path[i]
+        r2, c2 = path[i]
 
-        if hDir == 1:  # #vizszintes vonal
-            y = size - r1 
-            if c2 > c1:  # jobbra
-                x1, x2 = c1, c2
-            elif c2 == c1:  # jobbra
-                x1, x2 = c1, c2
-            else:  # balra
-                x1, x2 = c2, c1 + 1
-                x1, x2 = c2 + 1, c1 + 1
-            ax.plot([x1, x2], [y, y], color='red', linewidth=3)
+        hDir = -1
+        vDir = -1
+        hDir_Next = -1
+        vDir_Next = -1
 
-        elif c1 == c2:  # függőleges vonal
-            x = c1 + 1
-            if r2 > r1:  # lefele
-                y1, y2 = size - r1 ,size - r2
-            else:  # felfel
-                y1, y2 = size - r2 - 1, size - r1 + 1
-                y1, y2 = size - r2, size - r1
-            ax.plot([x, x], [y1, y2], color='red', linewidth=3)
-    hDir = c2 - c1
-    vDir = r2 - r1
+
+      #print(f"r1:{r1} c1:{c1} - hDir:{hDir}/{hDir_Next} vDir:{vDir}/{vDir_Next}") debug info
+
+      if hDir == 1 or hDir_Next == 1 or (hDir_Next == -1 and vDir_Next == -1):  # jobbra
+          y = size - r1 
+          x1, x2 = c1, c1 + 1
+          ax.plot([x1, x2], [y, y], color='red', linewidth=3)
+
+      if hDir == -1 or hDir_Next == -1:  # Balra
+          y = size - r1 - 1
+          x1, x2 = c1, c1 + 1
+          ax.plot([x1, x2], [y, y], color='red', linewidth=3) 
+
+      if vDir == 1 or vDir_Next == 1:  #lefele
+          x = c1 + 1
+          y1, y2 = size - r1 ,size - r1 - 1
+          ax.plot([x, x], [y1, y2], color='red', linewidth=3)
+
+      if vDir == -1 or vDir_Next == -1:  #felfele
+        x = c1
+        y1, y2 = size - r1 ,size - r1 - 1
+        ax.plot([x, x], [y1, y2], color='red', linewidth=3)
 
     ax.set_xlim(0, size)
     ax.set_ylim(0, size)
