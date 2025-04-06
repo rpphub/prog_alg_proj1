@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import streamlit as st
 
 class matrix:
   def __init__(self,w,h):
@@ -7,6 +8,9 @@ class matrix:
     self.h = h
     self.len = w * h
     self.number = 2
+    self.fig, self.ax = plt.subplots(figsize=(6, 6))
+    self.ax.set_xticks([])
+    self.ax.set_yticks([])
 
   def fill_with_test_data(self):
     index = 0
@@ -121,21 +125,18 @@ class matrix:
 
   def plot_spiral_path(self, path):
     size = len(self.matrix)
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.set_xticks([])
-    ax.set_yticks([])
 
     # Alaprács
     for i in range(size + 1):
-        ax.plot([0, size], [i, i], color='black', linewidth=1)
-        ax.plot([i, i], [0, size], color='black', linewidth=1)
+        self.ax.plot([0, size], [i, i], color='black', linewidth=1)
+        self.ax.plot([i, i], [0, size], color='black', linewidth=1)
 
     # Számok beírása
     for i in range(size):
         for j in range(size):
             val = self.matrix[i][j]
             if val != 0:
-                ax.text(j + 0.5, size - i - 0.5, str(val),
+                self.ax.text(j + 0.5, size - i - 0.5, str(val),
                         ha='center', va='center', fontsize=16)
 
     # Spirál
@@ -168,28 +169,28 @@ class matrix:
       if hDir == 1 or hDir_Next == 1 or (hDir_Next == -1 and vDir_Next == -1):  # jobbra
           y = size - r1 
           x1, x2 = c1, c1 + 1
-          ax.plot([x1, x2], [y, y], color='red', linewidth=3)
+          self.ax.plot([x1, x2], [y, y], color='red', linewidth=3)
 
       if hDir == -1 or hDir_Next == -1:  # Balra
           y = size - r1 - 1
           x1, x2 = c1, c1 + 1
-          ax.plot([x1, x2], [y, y], color='red', linewidth=3) 
+          self.ax.plot([x1, x2], [y, y], color='red', linewidth=3) 
 
       if vDir == 1 or vDir_Next == 1:  #lefele
           x = c1 + 1
           y1, y2 = size - r1 ,size - r1 - 1
-          ax.plot([x, x], [y1, y2], color='red', linewidth=3)
+          self.ax.plot([x, x], [y1, y2], color='red', linewidth=3)
 
       if vDir == -1 or vDir_Next == -1:  #felfele
         x = c1
         y1, y2 = size - r1 ,size - r1 - 1
-        ax.plot([x, x], [y1, y2], color='red', linewidth=3)
+        self.ax.plot([x, x], [y1, y2], color='red', linewidth=3)
 
-    ax.set_xlim(0, size)
-    ax.set_ylim(0, size)
-    ax.set_aspect('equal')
-    plt.tight_layout()
-    plt.show()
+    self.ax.set_xlim(0, size)
+    self.ax.set_ylim(0, size)
+    self.ax.set_aspect('equal')
+    #plt.tight_layout()
+    #plt.show()
 
 #Matrix létrehozás / feltőltés
 Matrix = matrix(6,6)
@@ -199,3 +200,25 @@ Matrix.display()
 #Plototolt megjelenítés.
 Matrix.plot_spiral_path(spiral_path)
   
+
+############## Robi - Streamlit ############
+# Streamlit View
+st.set_page_config(
+  page_title="Problémamegoldás és algoritmusok beadandó",
+  page_icon=":bar_chart:",
+)
+
+with st.sidebar:
+    st.page_link('main.py', label='Project', icon=':material/bar_chart:')
+    st.page_link('pages/about.py', label='Készítők', icon=':material/handshake:')
+
+# Title
+st.markdown("<h1 style='text-align: center;'>Problémamegoldás és algoritmusok beadandó feladat</h1>", unsafe_allow_html=True)
+st.markdown("***")  
+
+st.markdown("<h2 style='text-align: center;'>Feladat leírása</h2>", unsafe_allow_html=True)
+
+st.image("images/feladat.jpg")
+
+st.markdown("<h2 style='text-align: center;'>Feladat megoldása</h2>", unsafe_allow_html=True)
+st.write(Matrix.fig) #Grafikon streamlit-ba ágyazása
